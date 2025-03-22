@@ -1,0 +1,161 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyO1/ova58DcLQmjdnembos+",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/bowenhickman/python_hw/blob/main/hw4\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 23,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "collapsed": true,
+        "id": "p9yrpu0iLaTh",
+        "outputId": "c8e1d7b1-7dab-4d09-aaf0-ffcc5861f006"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "buying at:  166.63\n",
+            "selling at:  172.98\n",
+            "trade profit:  6.35\n",
+            "buying at:  161.48\n",
+            "selling at:  162.13\n",
+            "trade profit:  0.65\n",
+            "buying at:  177.81\n",
+            "selling at:  177.55\n",
+            "trade profit:  -0.26\n",
+            "buying at:  173.74\n",
+            "selling at:  182.47\n",
+            "trade profit:  8.73\n",
+            "buying at:  241.03\n",
+            "selling at:  232.07\n",
+            "trade profit:  -8.96\n",
+            "buying at:  216.86\n",
+            "selling at:  207.83\n",
+            "trade profit:  -9.03\n",
+            "buying at:  210.66\n",
+            "selling at:  219.41\n",
+            "trade profit:  8.75\n",
+            "buying at:  210.73\n",
+            "selling at:  226.17\n",
+            "trade profit:  15.44\n",
+            "buying at:  249.02\n",
+            "selling at:  260.48\n",
+            "trade profit:  11.46\n",
+            "buying at:  249.85\n",
+            "selling at:  288.53\n",
+            "trade profit:  38.68\n",
+            "buying at:  311.18\n",
+            "selling at:  338.74\n",
+            "trade profit:  27.56\n",
+            "buying at:  332.89\n",
+            "selling at:  357.09\n",
+            "trade profit:  24.2\n",
+            "buying at:  436.17\n",
+            "selling at:  462.28\n",
+            "trade profit:  26.11\n",
+            "buying at:  431.66\n",
+            "selling at:  428.22\n",
+            "trade profit:  -3.44\n",
+            "buying at:  412.38\n",
+            "selling at:  355.84\n",
+            "trade profit:  -56.54\n",
+            "buying at:  337.8\n",
+            "selling at:  249.98\n",
+            "trade profit:  -87.82\n",
+            "buying at:  225.31\n",
+            "==========================\n",
+            "Total profit:  1.88\n",
+            "First buy:  166.63\n",
+            "% return:  1.13 %\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Open the file and read the prices\n",
+        "file = open(\"/content/TSLA.txt\")\n",
+        "lines = file.readlines()\n",
+        "file.close()\n",
+        "\n",
+        "# Convert prices to a list of floats (list comprehension)\n",
+        "prices = [round(float(line.strip()), 2) for line in lines]\n",
+        "\n",
+        "# Set variables\n",
+        "buy_price = None\n",
+        "first_buy_price = None\n",
+        "total_profit = 0.0\n",
+        "profits = []\n",
+        "\n",
+        "# Loop through prices, starting from 5 to calculate the 5-day moving average\n",
+        "for i in range(5, len(prices)):\n",
+        "    avg_price = sum(prices[i-5:i]) / 5  # 5-day moving average\n",
+        "    current_price = prices[i]\n",
+        "    if current_price < avg_price * 0.98:  # Buy condition\n",
+        "        if buy_price is None:\n",
+        "            buy_price = current_price\n",
+        "            if first_buy_price is None:\n",
+        "                first_buy_price = buy_price\n",
+        "            print(\"buying at: \", buy_price)\n",
+        "    elif current_price > avg_price * 1.02:  # Sell condition\n",
+        "        if buy_price is not None:\n",
+        "            sell_price = current_price\n",
+        "            profit = sell_price - buy_price\n",
+        "            total_profit += profit\n",
+        "            profits.append(profit)\n",
+        "            print(\"selling at: \", sell_price)\n",
+        "            print(\"trade profit: \", round(profit, 2))\n",
+        "            buy_price = None  # Reset buy price after selling\n",
+        "\n",
+        "# Final profit percentage calculation\n",
+        "if first_buy_price:\n",
+        "    final_profit_percentage = (total_profit / first_buy_price) * 100\n",
+        "else:\n",
+        "    final_profit_percentage = 0.0\n",
+        "\n",
+        "print('==========================')\n",
+        "print(\"Total profit: \", round(total_profit, 2))\n",
+        "if first_buy_price:\n",
+        "    print(\"First buy: \", first_buy_price)\n",
+        "    print(\"% return: \", round(final_profit_percentage, 2),\"%\")\n",
+        "else:\n",
+        "    print(\"No trades were executed.\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "5zs-Y96qVlaY"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
